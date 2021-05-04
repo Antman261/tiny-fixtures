@@ -51,7 +51,7 @@ import { tinyFixtures } from 'tiny-fixtures';
 import { pool } from './db/connection';
 import { getUsers } from '/db/users';
 
-const { createFixtures } = tinyFixtures(pool)
+const { createFixtures } = tinyFixtures(pool);
 
 describe('my test cases', () => {
     const [setupUserFixtures, teardownUserFixtures, users] = createFixtures('users', [
@@ -67,7 +67,7 @@ describe('my test cases', () => {
         'user_messages',
         [
             {
-                userId: users[0],
+                userId: users[0].getRefByKey('id'), // oh no, how do
                 message: 'Foobar did the bar foo good',
             }
         ]
