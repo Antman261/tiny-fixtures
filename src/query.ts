@@ -1,3 +1,5 @@
+import { Pool, QueryResult } from 'pg';
+
 type Row = Object;
 
 const buildInsertColumnString = (row: Row) =>
@@ -11,7 +13,7 @@ const buildInsertValueBindingString = (row: Row) =>
     .map((_, i) => `$${i+1}`)
     .join(', ')})`;
 
-export const buildInsertQueryString = (table: string, row: Row) => `
+const buildInsertQueryString = (table: string, row: Row) => `
     INSERT INTO ${table}
     ${buildInsertColumnString(row)}
     VALUES
@@ -23,3 +25,15 @@ export const buildDeleteQueryString = (table: string, pkName: string, keys: Arra
   DELETE FROM ${table}
   WHERE ${pkName} IN (${keys.join(', ')})
 `;
+
+export const findPrimaryKeyName = ({ fields }: QueryResult): string => {
+    const fieldDef = fields.find(field => field.columnID === 1);
+    if (!fieldDef) {
+        throw new Error(`No primary key found in result fieldset: ${JSON.stringify(fields)}`);
+    }
+    return fieldDef.name;
+}
+
+export const createRowToQueryMapper = (table: string, pool: Pool) =>
+  (row: Row): Promise<QueryResult> =>
+    pool.query(buildInsertQueryString(table, row), Object.values(row));

@@ -19,7 +19,7 @@
     "singleQuote": true
   },
   "mocha": {
-    "extension": ["test.ts"],
+    "extension": ["ts"],
     "watch-files": ["src/**/*.ts", "test/**/*.ts"],
     "require": "ts-node/register"
   },
