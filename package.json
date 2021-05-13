@@ -5,7 +5,8 @@
   "main": "lib/index",
   "types": "lib/index",
   "scripts": {
-    "test": "mocha -r ts-node/register test/**/*.test.ts",
+    "test": "mocha",
+    "watch": "mocha -w",
     "build": "npx tsc -p ."
   },
   "lint-staged": {
@@ -17,7 +18,12 @@
   "prettier": {
     "singleQuote": true
   },
-  "author": "",
+  "mocha": {
+    "extension": ["test.ts"],
+    "watch-files": ["src/**/*.ts"],
+    "require": "ts-node/register"
+  },
+  "author": "Anthony Manning-Franklin <anthony.manning.franklin@gmail.com> (https://antman-does-software.com)",
   "license": "MIT",
   "devDependencies": {
     "@types/chai": "^4.2.18",
