@@ -20,7 +20,7 @@
   },
   "mocha": {
     "extension": ["test.ts"],
-    "watch-files": ["src/**/*.ts"],
+    "watch-files": ["src/**/*.ts", "test/**/*.ts"],
     "require": "ts-node/register"
   },
   "author": "Anthony Manning-Franklin <anthony.manning.franklin@gmail.com> (https://antman-does-software.com)",

@@ -24,7 +24,8 @@ describe('integration test the whole library', () => {
         await teardownUserFixtures();
       });
       it('should have two users in the database', async () => {
-        expect((await getUsers).length).to.equal(2);
+        const users = await getUsers();
+        expect(users.length).to.equal(2);
       });
     })
   })

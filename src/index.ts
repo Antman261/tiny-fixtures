@@ -1,4 +1,5 @@
-import {Pool} from "pg";
+import { Pool } from "pg";
+import { buildDeleteQueryString, buildInsertQueryString } from './query';
 
 type SetupFixtures = () => void;
 type TeardownFixtures = () => void;
@@ -18,11 +19,25 @@ export const tinyFixtures = (pool: Pool): TinyFixtures => {
             ...r,
             getRefByKey
         }));
-        const setupFixtures = () => {
-
+        const primaryKeys: Array<string> | Array<number> = [];
+        let primaryKeyName = '';
+        const setupFixtures = async () => {
+            // lets do the bad thing to make the tests pass, then figure out how to refactor
+            // will need to loop through every row and check for functions, then execute them to resolve their values
+            const queryString = buildInsertQueryString(table, rows[0]);
+            const results = await Promise.all([...rows.map(row => pool.query(queryString, Object.values(row)))]);
+            const primaryKeyFieldDef = results[0].fields.find(field => field.columnID === 1);
+            if (!primaryKeyFieldDef) {
+                throw new Error(`No primary key found in result fieldset: ${JSON.stringify(results[0].fields)}`);
+            }
+            const { name: pkName } = primaryKeyFieldDef;
+            primaryKeyName = pkName;
+            // @ts-ignore
+            results.forEach(result => primaryKeys.push(result.rows[0][pkName]));
+            return results;
         };
-        const teardownFixtures = () => {
-
+        const teardownFixtures = async () => {
+            return pool.query(buildDeleteQueryString(table, primaryKeyName, primaryKeys));
         };
 
         return [setupFixtures, teardownFixtures, rowsEnhanced];
