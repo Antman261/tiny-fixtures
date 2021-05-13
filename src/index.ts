@@ -7,39 +7,33 @@ import {
 
 type SetupFixtures = () => void;
 type TeardownFixtures = () => void;
-type RowHelpers<T> = {
-    getRefByKey: (key: string, idx: number) => (obj: T) => string | number; // this func returns a function tha
+type RowHelpers = {
+    /*
+        @param key: pass the name of the column in the originating table
+        @param idx: pass the index position of the row
+     */
+    getRefByKey: (key: string) => () => string | number;
 }
 
 type TinyFixtures = {
-    createFixtures: <T extends object>(table: string, rows: T[], primaryKeyName?: string) => [SetupFixtures, TeardownFixtures, Array<T & RowHelpers<T>>];
+    createFixtures: <T extends object>(table: string, rows: T[], primaryKeyName?: string) => [SetupFixtures, TeardownFixtures, Array<T & RowHelpers>];
 }
 
-const createRefGetter = (rows: any[]) =>
-  <T extends object>(key: string, index: number) =>
-    (obj: T): string | number => {
-        console.log('obj:', obj)
-        console.log('rows', rows);
+const createRefGetter = (rows: any[], index: number) =>
+  <T extends object>(key: string) =>
+    (): string | number => rows[index][key];
 
-        // @ts-ignore
-        return rows[index][key];
-    };
-
-// ok lets think a minute here... we have access to an object, we know its index position, we want to get its pk id but it hasnt been set yet
-// if we pass the ref function an array, it can load that into the context...
 
 export const tinyFixtures = (pool: Pool): TinyFixtures => {
     const createFixtures: TinyFixtures['createFixtures'] = (table, rows, primaryKeyName) => {
-        let rowsEnhanced: any[] = [];
-        rows.forEach(r => rowsEnhanced.push({
+        const rowsEnhanced: any[] = [];
+        rows.forEach((r, index) => rowsEnhanced.push({
             ...r,
-            getRefByKey: createRefGetter(rowsEnhanced),
+            getRefByKey: createRefGetter(rowsEnhanced, index),
         }));
         let primaryKeys: Array<string> | Array<number> = [];
         let pkName: string;
         const setupFixtures = async () => {
-            // lets do the bad thing to make the tests pass, then figure out how to refactor
-            // will need to loop through every row and check for functions, then execute them to resolve their values
             const rowsResolved = rows.map(row => {
                 const unresolvedKey = Object
                   .keys(row)
@@ -48,7 +42,7 @@ export const tinyFixtures = (pool: Pool): TinyFixtures => {
 
                 if (unresolvedKey) {
                     // @ts-ignore
-                    const resolvedValue = row[unresolvedKey](row);
+                    const resolvedValue = row[unresolvedKey]();
                     return {
                         ...row,
                         [unresolvedKey]: resolvedValue,
@@ -59,6 +53,7 @@ export const tinyFixtures = (pool: Pool): TinyFixtures => {
 
             const mapRowToInsertQuery = createRowToQueryMapper(table, pool);
             const pendingInsertQueries = rowsResolved.map(mapRowToInsertQuery);
+            // might need to loop here so we can guarantee insert order
 
             const results = await Promise.all([
               ...pendingInsertQueries
@@ -67,19 +62,13 @@ export const tinyFixtures = (pool: Pool): TinyFixtures => {
             pkName = primaryKeyName || findPrimaryKeyName(results[0]);
             primaryKeys = results.map(({ rows }) => rows[0][pkName]);
 
-            // we could do a cheeky mutation and replace the rowsEnhanced with result + enhance
-            // rowsEnhanced.splice(0, rowsEnhanced.length);
             const mixedArr = results.map(({ rows }, i) => ({
                 ...rowsEnhanced[i],
                 ...rows[0],
             }));
 
-            console.log('mixedArr', mixedArr);
-
             rowsEnhanced.splice(0, rowsEnhanced.length);
             mixedArr.forEach(r => rowsEnhanced.push(r));
-
-            console.log('rowsenhanced', rowsEnhanced)
 
             return results;
         };

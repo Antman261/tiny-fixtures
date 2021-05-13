@@ -27,6 +27,7 @@ describe('integration test the whole library', () => {
       expect(users.length).to.equal(2);
     });
   });
+
   describe('Two table with join use case', () => {
     const [setupUserFixtures, teardownUserFixtures, users] = createFixtures('users', [
       {
@@ -41,8 +42,12 @@ describe('integration test the whole library', () => {
       'user_messages',
       [
         {
-          user_id: users[0].getRefByKey('id', 0), // oh no, how do
+          user_id: users[0].getRefByKey('id'),
           message: 'Foobar did the bar foo good',
+        },
+        {
+          user_id: users[0].getRefByKey('id'),
+          message: 'I am a meat popsicle',
         }
       ]
     )
@@ -54,8 +59,11 @@ describe('integration test the whole library', () => {
       await teardownUserMessageFixtures();
       await teardownUserFixtures();
     });
-    it('should have two users in the database', async () => {
-      expect((await getUsers()).length).to.equal(2);
+    it('should have a user with two messages, and one with none', async () => {
+      const users = await getUsers();
+      expect(users.length).to.equal(2);
+      expect(users[0].messages.length).to.equal(2);
+      expect(users[1].messages.length).to.equal(0);
     });
   });
 });
