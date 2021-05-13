@@ -1,9 +1,10 @@
 {
   "name": "tiny-fixtures",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "lib/index",
   "types": "lib/index",
+  "files": ["lib", "LICENSE", "README.md", "package.json"],
   "scripts": {
     "test": "mocha",
     "watch": "mocha -w",
