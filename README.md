@@ -1,5 +1,13 @@
 # Tiny Fixtures
 
+## Installation
+
+Run `npm i -D tiny-fixtures` to save to your dev dependencies.
+
+## Compatibility
+
+Currently, only tested against Postgres flavoured SQL and assumes a node-postgres pool
+
 ## Usage
 
 Start by initialising a fixture manager with a connection. 
