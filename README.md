@@ -92,3 +92,11 @@ describe('my test cases', () => {
 ```
 
 Pay attention to the ordering -- following these simple patterns is what keeps tiny-fixtures tiny!
+
+**_Whats up with `user_id: users[0].getRefByKey('id')` ?_**
+
+Since the fixture hasn't been inserted into the database yet, we don't have any serial/sequence values yet. This function takes the column name of the primary key for the parent object in the foreign key, allowing the value to be resolved when the setup step occurs. 
+
+How? Well when the setup step runs for the child table, it sees the output of this function as a flag, looks up the result for that column in the original object, and populates its value before continuing the insert.
+
+
