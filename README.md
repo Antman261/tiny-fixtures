@@ -107,4 +107,6 @@ Since the fixture hasn't been inserted into the database yet, we don't have any 
 
 How? Well when the setup step runs for the child table, it sees the output of this function as a flag, looks up the result for that column in the original object, and populates its value before continuing the insert.
 
+### Docs
 
+Full documentation located at https://github.com/Antman261/tiny-fixtures/tree/main/docs

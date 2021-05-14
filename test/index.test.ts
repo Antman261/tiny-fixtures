@@ -49,7 +49,7 @@ describe('integration test the whole library', () => {
           user_id: users[0].getRefByKey('id'),
           message: 'I am a meat popsicle',
         }
-      ]
+      ],
     )
     beforeEach(async () => {
       await setupUserFixtures();

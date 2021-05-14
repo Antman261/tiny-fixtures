@@ -9,11 +9,18 @@
   },
   "main": "lib/index",
   "types": "lib/index",
-  "files": ["lib", "LICENSE", "README.md", "package.json"],
+  "files": [
+    "lib",
+    "LICENSE",
+    "README.md",
+    "package.json"
+  ],
   "scripts": {
     "test": "mocha",
     "watch": "mocha -w",
-    "build": "npx tsc -p ."
+    "build": "npx tsc -p .",
+    "prepare": "npx tsc -p . && typedoc --out docs src/index.ts",
+    "watch:docs": "typedoc --out docs src/index.ts --watch"
   },
   "lint-staged": {
     "*.ts": [
@@ -25,8 +32,13 @@
     "singleQuote": true
   },
   "mocha": {
-    "extension": ["ts"],
-    "watch-files": ["src/**/*.ts", "test/**/*.ts"],
+    "extension": [
+      "ts"
+    ],
+    "watch-files": [
+      "src/**/*.ts",
+      "test/**/*.ts"
+    ],
     "require": "ts-node/register"
   },
   "author": "Anthony Manning-Franklin <anthony.manning.franklin@gmail.com> (https://antman-does-software.com)",
@@ -43,6 +55,7 @@
     "pg": "^8.6.0",
     "prettier": "^2.2.1",
     "ts-node": "^9.1.1",
+    "typedoc": "^0.20.36",
     "typescript": "^4.2.4"
   }
 }
