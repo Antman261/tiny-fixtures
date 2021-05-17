@@ -111,4 +111,4 @@ How? Well when the setup step runs for the child table, it sees the output of th
 
 ### Docs
 
-Full documentation located at https://antman261.github.io/tiny-fixtures
+Full documentation located at [https://www.tiny-fixtures.com/modules.html](https://www.tiny-fixtures.com/modules.html)
