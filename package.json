@@ -1,6 +1,6 @@
 {
   "name": "tiny-fixtures",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Simple database fixtures",
   "homepage": "https://github.com/antman261/tiny-fixtures",
   "repository": {
@@ -19,8 +19,8 @@
     "test": "mocha",
     "watch": "mocha -w",
     "build": "npx tsc -p .",
-    "prepare": "npx tsc -p . && typedoc --out docs src/index.ts",
-    "watch:docs": "typedoc --out docs src/index.ts --watch"
+    "build-docs": "typedoc --out docs src/index.ts",
+    "prepare": "npx tsc -p ."
   },
   "lint-staged": {
     "*.ts": [
@@ -56,6 +56,7 @@
     "prettier": "^2.2.1",
     "ts-node": "^9.1.1",
     "typedoc": "^0.20.36",
+    "typedoc-plugin-markdown": "^3.8.1",
     "typescript": "^4.2.4"
   }
 }
