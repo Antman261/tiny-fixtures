@@ -109,4 +109,4 @@ How? Well when the setup step runs for the child table, it sees the output of th
 
 ### Docs
 
-Full documentation located at https://github.com/Antman261/tiny-fixtures/tree/main/docs
+Full documentation located at [https://www.tiny-fixtures.com/modules.html](https://www.tiny-fixtures.com/modules.html)
