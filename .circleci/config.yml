@@ -6,6 +6,7 @@ jobs:
       - image: cimg/node:14.17
     steps:
       - checkout
+      - setup_remote_docker
       - run:
           name: Run Tests
           command: docker-compose up --exit-code-from node-tests
