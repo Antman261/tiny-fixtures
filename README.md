@@ -1,5 +1,5 @@
 # Tiny Fixtures
-
+[![tiny-fixtures](https://circleci.com/gh/Antman261/tiny-fixtures.svg?style=svg)](https://app.circleci.com/pipelines/github/Antman261/tiny-fixtures)
 ## Installation
 
 Run `npm i -D tiny-fixtures` to save to your dev dependencies.
