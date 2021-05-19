@@ -1,0 +1,16 @@
+version: 2.1
+
+jobs:
+  test:
+    docker:
+      - image: cimg/node:14
+    steps:
+      - checkout
+      - run:
+          name: Run Tests
+          command: docker-compose up --exit-code-from node-tests
+
+workflows:
+  orb-free-workflow:
+    jobs:
+      - test

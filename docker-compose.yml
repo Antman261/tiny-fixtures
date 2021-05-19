@@ -1,9 +1,18 @@
-postgres:
-  image: postgres:13
-  volumes:
-    - ./db:/docker-entrypoint-initdb.d/
-  ports:
-    - 5432:5432
-  environment:
-    - POSTGRES_USER=postgres
-    - POSTGRES_PASSWORD=postgres
+version: "3.3"
+services:
+  db:
+    image: postgres:13
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  node-tests:
+    build: .
+    environment:
+      - DatabaseHost=db
+    depends_on:
+      - db
