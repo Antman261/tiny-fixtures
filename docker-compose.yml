@@ -1,9 +1,9 @@
 version: "3.3"
 services:
   db:
-    image: postgres:13
-    volumes:
-      - ./db:/docker-entrypoint-initdb.d/
+    build:
+      dockerfile: ./db-dockerfile
+      context: .
     ports:
       - 5432:5432
     environment:
