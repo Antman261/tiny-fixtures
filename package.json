@@ -19,10 +19,9 @@
     "test": "npx mocha",
     "watch": "npx mocha -w",
     "build": "npx tsc -p .",
-    "build-docs": "npx typedoc --out docs src/index.ts",
+    "build-docs": "npx typedoc --out docs src/index.ts --disableOutputCheck",
     "commit": "npx cz",
-    "prepare": "npm run build && npm run build-docs",
-    "release": "standard-version"
+    "release": "npm run build && npm run build-docs && standard-version"
   },
   "lint-staged": {
     "*.ts": [
