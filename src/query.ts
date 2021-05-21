@@ -21,10 +21,21 @@ const buildInsertQueryString = (table: string, row: Row) => `
     RETURNING *
 `;
 
-export const buildDeleteQueryString = (table: string, pkName: string, keys: Array<string | number>) => `
+export const buildDeleteQueryString = (table: string, pkName: string, keys: Array<string | number>) => {
+    if (!table) {
+        throw new Error(`No table given for delete query with pkName ${pkName}`)
+    }
+    if (!pkName) {
+        throw new Error(`No pkName given for delete query on ${table}`);
+    }
+    if (keys.length === 0) {
+        throw new Error(`No keys given for delete query on ${table}`);
+    }
+    return `
   DELETE FROM ${table}
   WHERE ${pkName} IN (${keys.join(', ')})
 `;
+}
 
 export const findPrimaryKeyName = ({ fields }: QueryResult): string => {
     const fieldDef = fields.find(field => field.columnID === 1);
