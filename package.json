@@ -16,12 +16,12 @@
     "package.json"
   ],
   "scripts": {
-    "test": "mocha",
-    "watch": "mocha -w",
+    "test": "npx mocha",
+    "watch": "npx mocha -w",
     "build": "npx tsc -p .",
-    "build-docs": "typedoc --out docs src/index.ts",
-    "commit": "cz",
-    "prepare": "npx tsc -p .",
+    "build-docs": "npx typedoc --out docs src/index.ts",
+    "commit": "npx cz",
+    "prepare": "npm run build && npm run build-docs",
     "release": "standard-version"
   },
   "lint-staged": {
