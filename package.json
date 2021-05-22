@@ -21,7 +21,7 @@
     "build": "npx tsc -p .",
     "build-docs": "npx typedoc --out docs src/index.ts --disableOutputCheck",
     "commit": "npx cz",
-    "release": "npm run build && npm run build-docs && standard-version"
+    "release": "npm run build && npm run build-docs && git add . && standard-version"
   },
   "lint-staged": {
     "*.ts": [
@@ -61,5 +61,6 @@
     "typedoc": "^0.20.36",
     "typedoc-plugin-markdown": "^3.8.1",
     "typescript": "^4.2.4"
-  }
+  },
+  "keywords": ["testing", "postgres", "fixtures", "typescript", "backend", "back-end"]
 }
