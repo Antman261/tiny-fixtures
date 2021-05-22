@@ -37,7 +37,7 @@ export const buildDeleteQueryString = (table: string, pkName: string, keys: Arra
 `;
 }
 
-export const findPrimaryKeyName = ({ fields }: QueryResult): string => {
+export const findPrimaryKeyName = ({ fields }: Pick<QueryResult, 'fields'>): string => {
     const fieldDef = fields.find(field => field.columnID === 1);
     if (!fieldDef) {
         throw new Error(`No primary key found in result fieldset: ${JSON.stringify(fields)}`);

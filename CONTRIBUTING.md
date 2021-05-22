@@ -20,3 +20,9 @@ All changes code must have accompanying tests. If you are adding a new feature t
 All migration files are located in `./db`. These files are executed in alphabetical order, so name your files `<next_migration_number>_<what_is_added>.sql`.
 
 For example `002_user_login_count.sql` if I were adding a new table that counts user logins.
+
+## Committing with Commitizen
+
+This project uses [Commitizen](https://github.com/commitizen/cz-cli) to enforce linted commits that can be used to automatically generate a change log.
+
+Instead of using `git commit` to commit, use `npm run commit` or `npx cz` and follow the prompts.

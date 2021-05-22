@@ -1,7 +1,9 @@
 import { expect } from 'chai';
 import { buildDeleteQueryString } from '../src/query';
+import { findPrimaryKeyName } from '../src/query';
+import { FieldDef, QueryResult } from 'pg';
 
-describe('query functions', function() {
+describe('query functions', function () {
   describe('buildDeleteQueryString', () => {
     const expectedOne = `
   DELETE FROM test
@@ -12,22 +14,22 @@ describe('query functions', function() {
   WHERE test_id IN (1, 2, 3)
 `;
     it('builds a basic delete query string', () => {
-      const actual =  buildDeleteQueryString('test', 'test_id', [1]);
+      const actual = buildDeleteQueryString('test', 'test_id', [1]);
       expect(actual).to.equal(expectedOne);
     });
 
     it('builds a delete query string with multiple ids', () => {
-      const actual =  buildDeleteQueryString('test', 'test_id', [1, 2, 3]);
+      const actual = buildDeleteQueryString('test', 'test_id', [1, 2, 3]);
       expect(actual).to.equal(expectedTwo);
     });
 
     it('builds a delete query string with string ids', () => {
-      const actual =  buildDeleteQueryString('test', 'test_id', ['1', '2', '3']);
+      const actual = buildDeleteQueryString('test', 'test_id', ['1', '2', '3']);
       expect(actual).to.equal(expectedTwo);
     });
 
     it('builds a delete query string with mixed ids', () => {
-      const actual =  buildDeleteQueryString('test', 'test_id', ['1', 2, '3']);
+      const actual = buildDeleteQueryString('test', 'test_id', ['1', 2, '3']);
       expect(actual).to.equal(expectedTwo);
     });
 
@@ -45,5 +47,36 @@ describe('query functions', function() {
       const func = () => buildDeleteQueryString('', 'bob', [1]);
       expect(func).to.throw();
     });
-  })
+  });
+  describe('findPrimaryKeyName', function () {
+    const fieldDefTemplate: FieldDef = {
+      columnID: 1,
+      name: 'id',
+      tableID: 1,
+      dataTypeID: 25,
+      dataTypeSize: 8,
+      dataTypeModifier: 0,
+      format: '',
+    };
+    const fieldsBad: Pick<QueryResult, 'fields'> = {
+      fields: [{ ...fieldDefTemplate, columnID: 2 }],
+    };
+    const fieldsGood: Pick<QueryResult, 'fields'> = {
+      fields: [
+        { ...fieldDefTemplate, name: 'username', columnID: 2 },
+        { ...fieldDefTemplate },
+      ],
+    };
+    it('throws if no column with ID 1 exists', () => {
+      const func = () => findPrimaryKeyName(fieldsBad);
+      expect(func).to.throw('No primary key');
+    });
+    it('throws if given empty fields array', () => {
+      const func = () => findPrimaryKeyName({ fields: [] });
+      expect(func).to.throw('No primary key');
+    });
+    it('returns the field name of column 1', () => {
+      expect(findPrimaryKeyName(fieldsGood)).to.equal('id');
+    });
+  });
 });
