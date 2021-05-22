@@ -1,6 +1,6 @@
 {
   "name": "tiny-fixtures",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Simple database fixtures",
   "homepage": "https://www.tiny-fixtures.com",
   "repository": {
@@ -62,5 +62,12 @@
     "typedoc-plugin-markdown": "^3.8.1",
     "typescript": "^4.2.4"
   },
-  "keywords": ["testing", "postgres", "fixtures", "typescript", "backend", "back-end"]
+  "keywords": [
+    "testing",
+    "postgres",
+    "fixtures",
+    "typescript",
+    "backend",
+    "back-end"
+  ]
 }
