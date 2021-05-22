@@ -25,6 +25,14 @@
 
 Use this function to create a set of fixtures for a particular table in the database.
 
+**`param`** The name of the table to insert test data into.
+
+**`param`** An array of objects containing test data. Each object is a row where keys are column names.
+
+**`param`** Optional name of the primary key column. If not provided, it is assumed that the first column is the primary key. Tiny-fixtures does not support composite primary keys.
+
+**`returns`** - An array containing setup and teardown functions, plus ResultArray
+
 #### Type declaration
 
 ▸ <T\>(`table`: *string*, `rows`: T[], `primaryKeyName?`: *string*): [[*SetupFixtures*](modules.md#setupfixtures), [*TeardownFixtures*](modules.md#teardownfixtures), [*ResultArray*](modules.md#resultarray)<T\>]
@@ -37,15 +45,15 @@ Use this function to create a set of fixtures for a particular table in the data
 
 #### Parameters
 
-| Name | Type | Description
-| :------ | :------ | :------ |
-| `table` | *string* | The name of the table to insert test data into. |
-| `rows` | T[] | An array of objects containing test data. Each object is a row where keys are column names. | 
-| `primaryKeyName?` | *string* | Optional name of the primary key column. If not provided, it is assumed that the first column is the primary key. Tiny-fixtures does not support composite primary keys. |
+| Name | Type |
+| :------ | :------ |
+| `table` | *string* |
+| `rows` | T[] |
+| `primaryKeyName?` | *string* |
 
 **Returns:** [[*SetupFixtures*](modules.md#setupfixtures), [*TeardownFixtures*](modules.md#teardownfixtures), [*ResultArray*](modules.md#resultarray)<T\>]
 
-Defined in: [index.ts:55](https://github.com/Antman261/tiny-fixtures/blob/ef9e542/src/index.ts#L55)
+Defined in: [index.ts:55](https://github.com/Antman261/tiny-fixtures/blob/cb3b2a6/src/index.ts#L55)
 
 ___
 
@@ -53,7 +61,7 @@ ___
 
 Ƭ **ResultArray**<T\>: T & [*RowHelpers*](modules.md#rowhelpers)[]
 
- This array contents changes depending upon whether tests are being prepared or running.
+ This array contents changes depending whether tests are being prepared or running
 
  ## Preparation
  At this point the data in this array is simply the data you passed to `createFixtures`, extended with `RowHelpers`. Since the inserts only occur in the `before` or `beforeEach` step, it is impossible to have the result of the insert before it has occurred.
@@ -67,7 +75,7 @@ ___
 | :------ |
 | `T` |
 
-Defined in: [index.ts:44](https://github.com/Antman261/tiny-fixtures/blob/ef9e542/src/index.ts#L44)
+Defined in: [index.ts:44](https://github.com/Antman261/tiny-fixtures/blob/cb3b2a6/src/index.ts#L44)
 
 ___
 
@@ -83,7 +91,7 @@ When the createFixtures function returns an array of the rows you've chosen to i
 | :------ | :------ | :------ |
 | `getRefByKey` | (`key`: *string*) => () => *string* \| *number* | Use this function to tell tiny-fixtures to get a value from this fixture after it has been inserted in the database, rather than the test data provided by you.  This is useful for cases such as accessing a primary key to create a join, or retrieving a default value, such as the result of `DEFAULT NOW()`  You only need to use this function to tell tiny-fixtures to retrieve this column at insert. When your tests are running, they will have access to the resulting insert if needed, as tiny-fixtures updates the result array on the fly.  **`param`** The name of the column to retrieve.  **`returns`** A function that can be executed later to retrieve the value |
 
-Defined in: [index.ts:21](https://github.com/Antman261/tiny-fixtures/blob/ef9e542/src/index.ts#L21)
+Defined in: [index.ts:21](https://github.com/Antman261/tiny-fixtures/blob/cb3b2a6/src/index.ts#L21)
 
 ___
 
@@ -99,7 +107,7 @@ Call this function inside your `before` or `beforeEach` step to insert the speci
 
 **Returns:** *void*
 
-Defined in: [index.ts:11](https://github.com/Antman261/tiny-fixtures/blob/ef9e542/src/index.ts#L11)
+Defined in: [index.ts:11](https://github.com/Antman261/tiny-fixtures/blob/cb3b2a6/src/index.ts#L11)
 
 ___
 
@@ -115,7 +123,7 @@ Call this function inside your `after` or `afterEach` step to delete the specifi
 
 **Returns:** *void*
 
-Defined in: [index.ts:16](https://github.com/Antman261/tiny-fixtures/blob/ef9e542/src/index.ts#L16)
+Defined in: [index.ts:16](https://github.com/Antman261/tiny-fixtures/blob/cb3b2a6/src/index.ts#L16)
 
 ___
 
@@ -131,7 +139,7 @@ Contains the createFixtures function, with the pool in its closure.
 | :------ | :------ |
 | `createFixtures` | [*CreateFixtures*](modules.md#createfixtures) |
 
-Defined in: [index.ts:60](https://github.com/Antman261/tiny-fixtures/blob/ef9e542/src/index.ts#L60)
+Defined in: [index.ts:60](https://github.com/Antman261/tiny-fixtures/blob/cb3b2a6/src/index.ts#L60)
 
 ## Functions
 
@@ -147,4 +155,4 @@ Defined in: [index.ts:60](https://github.com/Antman261/tiny-fixtures/blob/ef9e54
 
 **Returns:** [*TinyFixtures*](modules.md#tinyfixtures)
 
-Defined in: [index.ts:73](https://github.com/Antman261/tiny-fixtures/blob/ef9e542/src/index.ts#L73)
+Defined in: [index.ts:73](https://github.com/Antman261/tiny-fixtures/blob/cb3b2a6/src/index.ts#L73)

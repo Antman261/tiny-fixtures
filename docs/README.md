@@ -1,6 +1,6 @@
 tiny-fixtures / [Exports](modules.md)
 
-# Tiny Fixtures
+# Tiny Fixtures [![tiny-fixtures](https://circleci.com/gh/Antman261/tiny-fixtures.svg?style=svg)](https://app.circleci.com/pipelines/github/Antman261/tiny-fixtures) [![npm monthly downloads](https://img.shields.io/npm/dm/tiny-fixtures.svg?style=flat-square)](https://www.npmjs.com/package/tiny-fixtures) [![current version](https://img.shields.io/npm/v/tiny-fixtures.svg?style=flat-square)](https://www.npmjs.com/package/tiny-fixtures) [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
 ## Installation
 
@@ -112,3 +112,7 @@ How? Well when the setup step runs for the child table, it sees the output of th
 ### Docs
 
 Full documentation located at [https://www.tiny-fixtures.com/modules.html](https://www.tiny-fixtures.com/modules.html)
+
+## Changelog
+
+See [CHANGELOG.md](https://github.com/Antman261/tiny-fixtures/blob/main/CHANGELOG.md)
