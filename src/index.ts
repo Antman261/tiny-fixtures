@@ -1,8 +1,8 @@
-import { Pool } from "pg";
+import { Pool } from 'pg';
 import {
-    buildDeleteQueryString,
-    createRowToQueryMapper,
-    findPrimaryKeyName
+  buildDeleteQueryString,
+  createRowToQueryMapper,
+  findPrimaryKeyName,
 } from './query';
 
 /**
@@ -19,18 +19,17 @@ export type TeardownFixtures = () => void;
  * When the createFixtures function returns an array of the rows you've chosen to insert with test data, they are extended with these row helpers.
  */
 export type RowHelpers = {
-
-    /**
-     * Use this function to tell tiny-fixtures to get a value from this fixture after it has been inserted in the database, rather than the test data provided by you.
+  /**
+     * Using this function tells tiny-fixtures to get a value from this fixture after it has been inserted in the database, rather than the test data provided by you.
      *
      * This is useful for cases such as accessing a primary key to create a join, or retrieving a default value, such as the result of `DEFAULT NOW()`
      *
-     * You only need to use this function to tell tiny-fixtures to retrieve this column at insert. When your tests are running, they will have access to the resulting insert if needed, as tiny-fixtures updates the result array on the fly.
+     * You only need to use this function to tell tiny-fixtures to retrieve this column at insert. When your tests are running, they will have access to the resulting insert if needed, as tiny-fixtures updates the row array on the fly.
         @param key The name of the column to retrieve.
         @returns  A function that can be executed later to retrieve the value
      */
-    getRefByKey: (key: string) => () => string | number;
-}
+  getRefByKey: (key: string) => () => string | number;
+};
 
 /**
  *  This array contents changes depending whether tests are being prepared or running
@@ -52,79 +51,85 @@ export type ResultArray<T> = Array<T & RowHelpers>;
  *  @typeParam T The type of the objects representing each row.
  *  @returns - An array containing setup and teardown functions, plus ResultArray
  */
-export type CreateFixtures = <T extends object>(table: string, rows: T[], primaryKeyName?: string) => [SetupFixtures, TeardownFixtures, ResultArray<T>];
+export type CreateFixtures = <T extends object>(
+  table: string,
+  rows: T[],
+  primaryKeyName?: string
+) => [SetupFixtures, TeardownFixtures, ResultArray<T>];
 
 /**
  * Contains the createFixtures function, with the pool in its closure.
  */
 export type TinyFixtures = {
-    createFixtures: CreateFixtures;
-}
+  createFixtures: CreateFixtures;
+};
 
-const createRefGetter = (rows: any[], index: number) =>
+const createRefGetter =
+  (rows: any[], index: number) =>
   <T extends object>(key: string) =>
-    (): string | number => rows[index][key];
-
+  (): string | number =>
+    rows[index][key];
 
 /**
  *
  * @param pool A node postgres pool for tiny fixtures to connect with.
  */
 export const tinyFixtures = (pool: Pool): TinyFixtures => {
+  const createFixtures: TinyFixtures['createFixtures'] = (
+    table,
+    rows,
+    primaryKeyName
+  ) => {
+    const rowsEnhanced: any[] = [];
+    rows.forEach((r, index) =>
+      rowsEnhanced.push({
+        ...r,
+        getRefByKey: createRefGetter(rowsEnhanced, index),
+      })
+    );
+    let primaryKeys: Array<string> | Array<number> = [];
+    let pkName: string;
+    const setupFixtures = async () => {
+      const rowsResolved = rows.map((row) => {
+        const unresolvedKey = Object.keys(row)
+          // @ts-ignore
+          .find((k) => typeof row[k] === 'function');
 
-    const createFixtures: TinyFixtures['createFixtures'] = (table, rows, primaryKeyName) => {
-        const rowsEnhanced: any[] = [];
-        rows.forEach((r, index) => rowsEnhanced.push({
-            ...r,
-            getRefByKey: createRefGetter(rowsEnhanced, index),
-        }));
-        let primaryKeys: Array<string> | Array<number> = [];
-        let pkName: string;
-        const setupFixtures = async () => {
-            const rowsResolved = rows.map(row => {
-                const unresolvedKey = Object
-                  .keys(row)
-                  // @ts-ignore
-                  .find(k => typeof row[k] === 'function');
+        if (unresolvedKey) {
+          // @ts-ignore
+          const resolvedValue = row[unresolvedKey]();
+          return {
+            ...row,
+            [unresolvedKey]: resolvedValue,
+          };
+        }
+        return row;
+      });
 
-                if (unresolvedKey) {
-                    // @ts-ignore
-                    const resolvedValue = row[unresolvedKey]();
-                    return {
-                        ...row,
-                        [unresolvedKey]: resolvedValue,
-                    }
-                }
-                return row;
-            })
+      const mapRowToInsertQuery = createRowToQueryMapper(table, pool);
+      const pendingInsertQueries = rowsResolved.map(mapRowToInsertQuery);
+      // might need to loop here so we can guarantee insert order
 
-            const mapRowToInsertQuery = createRowToQueryMapper(table, pool);
-            const pendingInsertQueries = rowsResolved.map(mapRowToInsertQuery);
-            // might need to loop here so we can guarantee insert order
+      const results = await Promise.all([...pendingInsertQueries]);
 
-            const results = await Promise.all([
-              ...pendingInsertQueries
-            ]);
+      pkName = primaryKeyName || findPrimaryKeyName(results[0]);
+      primaryKeys = results.map(({ rows }) => rows[0][pkName]);
 
-            pkName = primaryKeyName || findPrimaryKeyName(results[0]);
-            primaryKeys = results.map(({ rows }) => rows[0][pkName]);
+      const mixedArr = results.map(({ rows }, i) => ({
+        ...rowsEnhanced[i],
+        ...rows[0],
+      }));
 
-            const mixedArr = results.map(({ rows }, i) => ({
-                ...rowsEnhanced[i],
-                ...rows[0],
-            }));
+      rowsEnhanced.splice(0, rowsEnhanced.length);
+      mixedArr.forEach((r) => rowsEnhanced.push(r));
 
-            rowsEnhanced.splice(0, rowsEnhanced.length);
-            mixedArr.forEach(r => rowsEnhanced.push(r));
+      return results;
+    };
+    const teardownFixtures = async () => {
+      return pool.query(buildDeleteQueryString(table, pkName, primaryKeys));
+    };
 
-            return results;
-        };
-        const teardownFixtures = async () => {
-            return pool.query(buildDeleteQueryString(table, pkName, primaryKeys));
-        };
-
-        return [setupFixtures, teardownFixtures, rowsEnhanced];
-    }
-    return { createFixtures }
-}
-
+    return [setupFixtures, teardownFixtures, rowsEnhanced];
+  };
+  return { createFixtures };
+};

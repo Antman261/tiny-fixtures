@@ -1,4 +1,4 @@
-import { Pool } from "pg";
+import { Pool } from 'pg';
 /**
  * Call this function inside your `before` or `beforeEach` step to insert the specified fixtures
  */
@@ -12,14 +12,14 @@ export declare type TeardownFixtures = () => void;
  */
 export declare type RowHelpers = {
     /**
-     * Use this function to tell tiny-fixtures to get a value from this fixture after it has been inserted in the database, rather than the test data provided by you.
-     *
-     * This is useful for cases such as accessing a primary key to create a join, or retrieving a default value, such as the result of `DEFAULT NOW()`
-     *
-     * You only need to use this function to tell tiny-fixtures to retrieve this column at insert. When your tests are running, they will have access to the resulting insert if needed, as tiny-fixtures updates the result array on the fly.
-        @param key The name of the column to retrieve.
-        @returns  A function that can be executed later to retrieve the value
-     */
+       * Using this function tells tiny-fixtures to get a value from this fixture after it has been inserted in the database, rather than the test data provided by you.
+       *
+       * This is useful for cases such as accessing a primary key to create a join, or retrieving a default value, such as the result of `DEFAULT NOW()`
+       *
+       * You only need to use this function to tell tiny-fixtures to retrieve this column at insert. When your tests are running, they will have access to the resulting insert if needed, as tiny-fixtures updates the row array on the fly.
+          @param key The name of the column to retrieve.
+          @returns  A function that can be executed later to retrieve the value
+       */
     getRefByKey: (key: string) => () => string | number;
 };
 /**
