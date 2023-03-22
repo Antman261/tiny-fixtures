@@ -66,4 +66,41 @@ describe('integration test the whole library', () => {
       expect(users[1].messages.length).to.equal(0);
     });
   });
+
+  describe('snake_case if identifiers have been camel/PascalCased', () => {
+    const { createFixtures } = tinyFixtures(pool, true);
+
+    const [setupUserFixtures, teardownUserFixtures, users] = createFixtures('Users', [
+      {
+        email: 'foo@bar.co',
+        username: 'tinyAnt'
+      }
+    ]);
+    const [setupUserMessageFixtures, teardownUserMessageFixtures] = createFixtures(
+      'UserMessages',
+      [
+        {
+          userId: users[0].getRefByKey('id'),
+          message: 'Foobar did the bar foo good',
+        },
+        {
+          userId: users[0].getRefByKey('id'),
+          message: 'I am a meat popsicle',
+        }
+      ],
+    )
+    beforeEach(async () => {
+      await setupUserFixtures();
+      await setupUserMessageFixtures();
+    });
+    afterEach(async () => {
+      await teardownUserMessageFixtures();
+      await teardownUserFixtures();
+    });
+    it('should have a user with two messages, and one with none', async () => {
+      const users = await getUsers();
+      expect(users.length).to.equal(1);
+      expect(users[0].messages.length).to.equal(2);
+    });
+  });
 });
