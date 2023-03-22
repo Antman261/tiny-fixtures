@@ -31,9 +31,10 @@ export const buildDeleteQueryString = (table: string, pkName: string, keys: Arra
     if (keys.length === 0) {
         throw new Error(`No keys given for delete query on ${table}`);
     }
+    const pkValues = keys.map((k) => (typeof k === "number") ? k : `'${k}'`)
     return `
   DELETE FROM ${table}
-  WHERE ${pkName} IN (${keys.join(', ')})
+  WHERE ${pkName} IN (${pkValues.join(', ')})
 `;
 }
 
