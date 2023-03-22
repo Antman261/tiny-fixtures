@@ -13,6 +13,14 @@ describe('query functions', function () {
   DELETE FROM test
   WHERE test_id IN (1, 2, 3)
 `;
+    const expectedThree = `
+  DELETE FROM test
+  WHERE test_id IN ('1', '2', '3')
+`;
+    const expectedFour = `
+  DELETE FROM test
+  WHERE test_id IN ('1', 2, '3')
+`;
     it('builds a basic delete query string', () => {
       const actual = buildDeleteQueryString('test', 'test_id', [1]);
       expect(actual).to.equal(expectedOne);
@@ -25,12 +33,12 @@ describe('query functions', function () {
 
     it('builds a delete query string with string ids', () => {
       const actual = buildDeleteQueryString('test', 'test_id', ['1', '2', '3']);
-      expect(actual).to.equal(expectedTwo);
+      expect(actual).to.equal(expectedThree);
     });
 
     it('builds a delete query string with mixed ids', () => {
       const actual = buildDeleteQueryString('test', 'test_id', ['1', 2, '3']);
-      expect(actual).to.equal(expectedTwo);
+      expect(actual).to.equal(expectedFour);
     });
 
     it('throws an error if given an empty array', () => {
