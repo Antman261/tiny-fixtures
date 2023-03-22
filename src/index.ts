@@ -8,12 +8,12 @@ import {
 /**
  * Call this function inside your `before` or `beforeEach` step to insert the specified fixtures
  */
-export type SetupFixtures = () => void;
+export type SetupFixtures = () => Promise<void>;
 
 /**
  * Call this function inside your `after` or `afterEach` step to delete the specified fixtures. This will only delete the data inserted for this fixture, so any other test data remains untouched.
  */
-export type TeardownFixtures = () => void;
+export type TeardownFixtures = () => Promise<void>;
 
 /**
  * When the createFixtures function returns an array of the rows you've chosen to insert with test data, they are extended with these row helpers.
@@ -115,11 +115,9 @@ export const tinyFixtures = (pool: Pool): TinyFixtures => {
 
       rowsEnhanced.splice(0, rowsEnhanced.length);
       mixedArr.forEach((r) => rowsEnhanced.push(r));
-
-      return results;
     };
     const teardownFixtures = async () => {
-      return pool.query(buildDeleteQueryString(table, pkName, primaryKeys));
+      await pool.query(buildDeleteQueryString(table, pkName, primaryKeys));
     };
 
     return [setupFixtures, teardownFixtures, rowsEnhanced];

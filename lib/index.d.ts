@@ -2,11 +2,11 @@ import { Pool } from 'pg';
 /**
  * Call this function inside your `before` or `beforeEach` step to insert the specified fixtures
  */
-export declare type SetupFixtures = () => void;
+export declare type SetupFixtures = () => Promise<void>;
 /**
  * Call this function inside your `after` or `afterEach` step to delete the specified fixtures. This will only delete the data inserted for this fixture, so any other test data remains untouched.
  */
-export declare type TeardownFixtures = () => void;
+export declare type TeardownFixtures = () => Promise<void>;
 /**
  * When the createFixtures function returns an array of the rows you've chosen to insert with test data, they are extended with these row helpers.
  */
