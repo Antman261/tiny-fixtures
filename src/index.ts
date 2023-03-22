@@ -74,7 +74,7 @@ const createRefGetter =
  *
  * @param pool A node postgres pool for tiny fixtures to connect with.
  */
-export const tinyFixtures = (pool: Pool): TinyFixtures => {
+export const tinyFixtures = (pool: Pool, camelCased: boolean = false): TinyFixtures => {
   const createFixtures: TinyFixtures['createFixtures'] = (
     table,
     rows,
@@ -97,7 +97,7 @@ export const tinyFixtures = (pool: Pool): TinyFixtures => {
         }, {})
       );
 
-      const mapRowToInsertQuery = createRowToQueryMapper(table, pool);
+      const mapRowToInsertQuery = createRowToQueryMapper(table, pool, camelCased);
       // might need to loop here so we can guarantee insert order
       const results:QueryResult<any>[] = [];
       for (const row of rowsResolved) {
@@ -117,7 +117,7 @@ export const tinyFixtures = (pool: Pool): TinyFixtures => {
       mixedArr.forEach((r) => rowsEnhanced.push(r));
     };
     const teardownFixtures = async () => {
-      await pool.query(buildDeleteQueryString(table, pkName, primaryKeys));
+      await pool.query(buildDeleteQueryString(table, pkName, primaryKeys, camelCased));
     };
 
     return [setupFixtures, teardownFixtures, rowsEnhanced];

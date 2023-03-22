@@ -1,11 +1,12 @@
 import { Pool, QueryResult } from 'pg';
+import { snakeCase } from 'snake-case';
 
 type Row = Object;
 
-const buildInsertColumnString = (row: Row) =>
+const buildInsertColumnString = (row: Row, camelCased: boolean) =>
   `(${Object
     .keys(row)
-    .map((k) => `"${k}"`)
+    .map((k) => `"${(camelCased ? snakeCase(k) : k)}"`)
     .join(', ')})`;
 
 const buildInsertValueBindingString = (row: Row) =>
@@ -14,15 +15,15 @@ const buildInsertValueBindingString = (row: Row) =>
     .map((_, i) => `$${i+1}`)
     .join(', ')})`;
 
-const buildInsertQueryString = (table: string, row: Row) => `
-    INSERT INTO "${table}"
-    ${buildInsertColumnString(row)}
+const buildInsertQueryString = (table: string, row: Row, camelCased: boolean) => `
+    INSERT INTO "${(camelCased ? snakeCase(table) : table)}"
+    ${buildInsertColumnString(row, camelCased)}
     VALUES
     ${buildInsertValueBindingString(row)}
     RETURNING *
 `;
 
-export const buildDeleteQueryString = (table: string, pkName: string, keys: Array<string | number>) => {
+export const buildDeleteQueryString = (table: string, pkName: string, keys: Array<string | number>, camelCased: boolean) => {
     if (!table) {
         throw new Error(`No table given for delete query with pkName ${pkName}`)
     }
@@ -34,8 +35,8 @@ export const buildDeleteQueryString = (table: string, pkName: string, keys: Arra
     }
     const pkValues = keys.map((k) => (typeof k === "number") ? k : `'${k}'`)
     return `
-  DELETE FROM "${table}"
-  WHERE "${pkName}" IN (${pkValues.join(', ')})
+  DELETE FROM "${(camelCased ? snakeCase(table) : table)}"
+  WHERE "${(camelCased ? snakeCase(pkName) : pkName)}" IN (${pkValues.join(', ')})
 `;
 }
 
@@ -47,6 +48,6 @@ export const findPrimaryKeyName = ({ fields }: Pick<QueryResult, 'fields'>): str
     return fieldDef.name;
 }
 
-export const createRowToQueryMapper = (table: string, pool: Pool) =>
+export const createRowToQueryMapper = (table: string, pool: Pool, camelCased: boolean) =>
   (row: Row): Promise<QueryResult> =>
-    pool.query(buildInsertQueryString(table, row), Object.values(row));
+    pool.query(buildInsertQueryString(table, row, camelCased), Object.values(row));

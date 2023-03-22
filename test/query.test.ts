@@ -22,38 +22,43 @@ describe('query functions', function () {
   WHERE "test_id" IN ('1', 2, '3')
 `;
     it('builds a basic delete query string', () => {
-      const actual = buildDeleteQueryString('test', 'test_id', [1]);
+      const actual = buildDeleteQueryString('test', 'test_id', [1], false);
       expect(actual).to.equal(expectedOne);
     });
 
     it('builds a delete query string with multiple ids', () => {
-      const actual = buildDeleteQueryString('test', 'test_id', [1, 2, 3]);
+      const actual = buildDeleteQueryString('test', 'test_id', [1, 2, 3], false);
       expect(actual).to.equal(expectedTwo);
     });
 
     it('builds a delete query string with string ids', () => {
-      const actual = buildDeleteQueryString('test', 'test_id', ['1', '2', '3']);
+      const actual = buildDeleteQueryString('test', 'test_id', ['1', '2', '3'], false);
       expect(actual).to.equal(expectedThree);
     });
 
     it('builds a delete query string with mixed ids', () => {
-      const actual = buildDeleteQueryString('test', 'test_id', ['1', 2, '3']);
+      const actual = buildDeleteQueryString('test', 'test_id', ['1', 2, '3'], false);
       expect(actual).to.equal(expectedFour);
     });
 
     it('throws an error if given an empty array', () => {
-      const func = () => buildDeleteQueryString('test', 'test_id', []);
+      const func = () => buildDeleteQueryString('test', 'test_id', [], false);
       expect(func).to.throw();
     });
 
     it('throws an error if given an empty pkName', () => {
-      const func = () => buildDeleteQueryString('test', '', [1]);
+      const func = () => buildDeleteQueryString('test', '', [1], false);
       expect(func).to.throw();
     });
 
     it('throws an error if given an empty table name', () => {
-      const func = () => buildDeleteQueryString('', 'bob', [1]);
+      const func = () => buildDeleteQueryString('', 'bob', [1], false);
       expect(func).to.throw();
+    });
+
+    it('builds a snake_cased delete query string', () => {
+      const actual = buildDeleteQueryString('Test', 'testId', [1], true);
+      expect(actual).to.equal(expectedOne);
     });
   });
   describe('findPrimaryKeyName', function () {

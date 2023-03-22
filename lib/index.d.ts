@@ -52,5 +52,5 @@ export declare type TinyFixtures = {
  *
  * @param pool A node postgres pool for tiny fixtures to connect with.
  */
-export declare const tinyFixtures: (pool: Pool) => TinyFixtures;
+export declare const tinyFixtures: (pool: Pool, camelCased?: boolean) => TinyFixtures;
 //# sourceMappingURL=index.d.ts.map

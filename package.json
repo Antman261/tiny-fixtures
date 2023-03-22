@@ -69,5 +69,8 @@
     "typescript",
     "backend",
     "back-end"
-  ]
+  ],
+  "dependencies": {
+    "snake-case": "^3.0.4"
+  }
 }
