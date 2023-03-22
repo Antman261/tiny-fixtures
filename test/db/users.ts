@@ -42,7 +42,7 @@ const mapUserTableToUser = async ({ id, email, username, created_at }: UserTable
 
 export const getUsers = async (): Promise<User[]> => {
   const result = await pool.query<UserTable>(`
-    SELECT * FROM users
+    SELECT * FROM users ORDER BY id
   `)
   return Promise.all([...result.rows.map(mapUserTableToUser)]);
 }

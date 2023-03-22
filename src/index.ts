@@ -1,4 +1,4 @@
-import { Pool } from 'pg';
+import { Pool, QueryResult } from 'pg';
 import {
   buildDeleteQueryString,
   createRowToQueryMapper,
@@ -107,10 +107,12 @@ export const tinyFixtures = (pool: Pool): TinyFixtures => {
       });
 
       const mapRowToInsertQuery = createRowToQueryMapper(table, pool);
-      const pendingInsertQueries = rowsResolved.map(mapRowToInsertQuery);
       // might need to loop here so we can guarantee insert order
-
-      const results = await Promise.all([...pendingInsertQueries]);
+      const results:QueryResult<any>[] = [];
+      for (const row of rowsResolved) {
+        const result = await mapRowToInsertQuery(row);
+        results.push(result)
+      }
 
       pkName = primaryKeyName || findPrimaryKeyName(results[0]);
       primaryKeys = results.map(({ rows }) => rows[0][pkName]);
