@@ -90,21 +90,12 @@ export const tinyFixtures = (pool: Pool): TinyFixtures => {
     let primaryKeys: Array<string> | Array<number> = [];
     let pkName: string;
     const setupFixtures = async () => {
-      const rowsResolved = rows.map((row) => {
-        const unresolvedKey = Object.keys(row)
-          // @ts-ignore
-          .find((k) => typeof row[k] === 'function');
-
-        if (unresolvedKey) {
-          // @ts-ignore
-          const resolvedValue = row[unresolvedKey]();
-          return {
-            ...row,
-            [unresolvedKey]: resolvedValue,
-          };
-        }
-        return row;
-      });
+      const rowsResolved = rows.map((row) =>
+        Object.entries(row).reduce((prev, [k, v]) => {
+          const val = typeof v === 'function' ? v() : v;
+          return { ...prev, [k]: val };
+        }, {})
+      );
 
       const mapRowToInsertQuery = createRowToQueryMapper(table, pool);
       // might need to loop here so we can guarantee insert order
