@@ -6,20 +6,20 @@ import { FieldDef, QueryResult } from 'pg';
 describe('query functions', function () {
   describe('buildDeleteQueryString', () => {
     const expectedOne = `
-  DELETE FROM test
-  WHERE test_id IN (1)
+  DELETE FROM "test"
+  WHERE "test_id" IN (1)
 `;
     const expectedTwo = `
-  DELETE FROM test
-  WHERE test_id IN (1, 2, 3)
+  DELETE FROM "test"
+  WHERE "test_id" IN (1, 2, 3)
 `;
     const expectedThree = `
-  DELETE FROM test
-  WHERE test_id IN ('1', '2', '3')
+  DELETE FROM "test"
+  WHERE "test_id" IN ('1', '2', '3')
 `;
     const expectedFour = `
-  DELETE FROM test
-  WHERE test_id IN ('1', 2, '3')
+  DELETE FROM "test"
+  WHERE "test_id" IN ('1', 2, '3')
 `;
     it('builds a basic delete query string', () => {
       const actual = buildDeleteQueryString('test', 'test_id', [1]);
