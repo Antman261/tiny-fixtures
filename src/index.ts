@@ -8,12 +8,12 @@ import {
 /**
  * Call this function inside your `before` or `beforeEach` step to insert the specified fixtures
  */
-export type SetupFixtures<T> = () => Promise<QueryResult<T>[]>;
+export type SetupFixtures<T> = () => Promise<any[]>;
 
 /**
  * Call this function inside your `after` or `afterEach` step to delete the specified fixtures. This will only delete the data inserted for this fixture, so any other test data remains untouched.
  */
-export type TeardownFixtures = () => void;
+export type TeardownFixtures = () => Promise<void>;
 
 /**
  * When the createFixtures function returns an array of the rows you've chosen to insert with test data, they are extended with these row helpers.
@@ -99,10 +99,10 @@ export const tinyFixtures = (pool: Pool): TinyFixtures => {
 
       const mapRowToInsertQuery = createRowToQueryMapper(table, pool);
       // might need to loop here so we can guarantee insert order
-      const results:QueryResult<any>[] = [];
+      const results: QueryResult<any>[] = [];
       for (const row of rowsResolved) {
         const result = await mapRowToInsertQuery(row);
-        results.push(result)
+        results.push(result);
       }
 
       pkName = primaryKeyName || findPrimaryKeyName(results[0]);
@@ -115,11 +115,9 @@ export const tinyFixtures = (pool: Pool): TinyFixtures => {
 
       rowsEnhanced.splice(0, rowsEnhanced.length);
       mixedArr.forEach((r) => rowsEnhanced.push(r));
-
-      return results;
     };
     const teardownFixtures = async () => {
-      return pool.query(buildDeleteQueryString(table, pkName, primaryKeys));
+      await pool.query(buildDeleteQueryString(table, pkName, primaryKeys));
     };
 
     return [setupFixtures, teardownFixtures, rowsEnhanced];
