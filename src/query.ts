@@ -5,6 +5,7 @@ type Row = Object;
 const buildInsertColumnString = (row: Row) =>
   `(${Object
     .keys(row)
+    .map((k) => `"${k}"`)
     .join(', ')})`;
 
 const buildInsertValueBindingString = (row: Row) =>
@@ -14,7 +15,7 @@ const buildInsertValueBindingString = (row: Row) =>
     .join(', ')})`;
 
 const buildInsertQueryString = (table: string, row: Row) => `
-    INSERT INTO ${table}
+    INSERT INTO "${table}"
     ${buildInsertColumnString(row)}
     VALUES
     ${buildInsertValueBindingString(row)}
@@ -33,8 +34,8 @@ export const buildDeleteQueryString = (table: string, pkName: string, keys: Arra
     }
     const pkValues = keys.map((k) => (typeof k === "number") ? k : `'${k}'`)
     return `
-  DELETE FROM ${table}
-  WHERE ${pkName} IN (${pkValues.join(', ')})
+  DELETE FROM "${table}"
+  WHERE "${pkName}" IN (${pkValues.join(', ')})
 `;
 }
 
