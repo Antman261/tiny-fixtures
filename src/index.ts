@@ -8,7 +8,7 @@ import {
 /**
  * Call this function inside your `before` or `beforeEach` step to insert the specified fixtures
  */
-export type SetupFixtures = () => Promise<void>;
+export type SetupFixtures = () => Promise<any[]>;
 
 /**
  * Call this function inside your `after` or `afterEach` step to delete the specified fixtures. This will only delete the data inserted for this fixture, so any other test data remains untouched.
@@ -115,6 +115,8 @@ export const tinyFixtures = (pool: Pool, camelCased: boolean = false): TinyFixtu
 
       rowsEnhanced.splice(0, rowsEnhanced.length);
       mixedArr.forEach((r) => rowsEnhanced.push(r));
+
+      return results.map(({ rows }) => rows[0]);
     };
     const teardownFixtures = async () => {
       await pool.query(buildDeleteQueryString(table, pkName, primaryKeys, camelCased));
