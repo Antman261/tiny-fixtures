@@ -2,7 +2,7 @@ import { Pool } from 'pg';
 /**
  * Call this function inside your `before` or `beforeEach` step to insert the specified fixtures
  */
-export declare type SetupFixtures = () => Promise<void>;
+export declare type SetupFixtures = () => Promise<any[]>;
 /**
  * Call this function inside your `after` or `afterEach` step to delete the specified fixtures. This will only delete the data inserted for this fixture, so any other test data remains untouched.
  */
