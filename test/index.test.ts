@@ -103,4 +103,68 @@ describe('integration test the whole library', () => {
       expect(users[0].messages.length).to.equal(2);
     });
   });
+
+  describe('returning values', () => {
+    const { createFixtures } = tinyFixtures(pool);
+    const [setupUserFixtures, teardownUserFixtures, users] = createFixtures('users', [
+      {
+        email: 'foo@bar.co',
+        username: 'tinyAnt'
+      }, {
+        email: 'bar@foo.co',
+        username: 'antTiny',
+      }
+    ]);
+    const [setupUserMessageFixtures, teardownUserMessageFixtures, userMessages] =
+      createFixtures('user_messages', [
+        {
+          user_id: users[0].getRefByKey('id'),
+          message: 'Foobar did the bar foo good',
+        },
+        {
+          user_id: users[0].getRefByKey('id'),
+          message: 'I am a meat popsicle',
+        },
+      ]);
+
+    afterEach(async () => {
+      await teardownUserMessageFixtures();
+      await teardownUserFixtures();
+    });
+
+    it('returns inserted rows', async () => {
+      const userRows = await setupUserFixtures();
+      const userMessageRows = await setupUserMessageFixtures();
+
+      expect(userRows).to.deep.equal([
+        {
+          id: users[0].getRefByKey('id')(),
+          email: 'foo@bar.co',
+          username: 'tinyAnt',
+          created_at: users[0].getRefByKey('created_at')(),
+        },
+        {
+          id: users[1].getRefByKey('id')(),
+          email: 'bar@foo.co',
+          username: 'antTiny',
+          created_at: users[1].getRefByKey('created_at')(),
+        },
+      ]);
+
+      expect(userMessageRows).to.deep.equal([
+        {
+          id: userMessages[0].getRefByKey('id')(),
+          user_id: users[0].getRefByKey('id')(),
+          message: 'Foobar did the bar foo good',
+          created_at: userMessages[0].getRefByKey('created_at')(),
+        },
+        {
+          id: userMessages[1].getRefByKey('id')(),
+          user_id: users[0].getRefByKey('id')(),
+          message: 'I am a meat popsicle',
+          created_at: userMessages[1].getRefByKey('created_at')(),
+        },
+      ]);
+    });
+  })
 });
