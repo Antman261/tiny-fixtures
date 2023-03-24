@@ -8,7 +8,7 @@ import {
 /**
  * Call this function inside your `before` or `beforeEach` step to insert the specified fixtures
  */
-export type SetupFixtures<T> = () => Promise<any[]>;
+export type SetupFixtures = () => Promise<any[]>;
 
 /**
  * Call this function inside your `after` or `afterEach` step to delete the specified fixtures. This will only delete the data inserted for this fixture, so any other test data remains untouched.
@@ -55,7 +55,7 @@ export type CreateFixtures = <T extends object>(
   table: string,
   rows: T[],
   primaryKeyName?: string
-) => [SetupFixtures<T>, TeardownFixtures, ResultArray<T>];
+) => [SetupFixtures, TeardownFixtures, ResultArray<T>];
 
 /**
  * Contains the createFixtures function, with the pool in its closure.
@@ -74,7 +74,10 @@ const createRefGetter =
  *
  * @param pool A node postgres pool for tiny fixtures to connect with.
  */
-export const tinyFixtures = (pool: Pool, camelCased: boolean = false): TinyFixtures => {
+export const tinyFixtures = (
+  pool: Pool,
+  camelCased: boolean = false
+): TinyFixtures => {
   const createFixtures: TinyFixtures['createFixtures'] = (
     table,
     rows,
@@ -97,7 +100,11 @@ export const tinyFixtures = (pool: Pool, camelCased: boolean = false): TinyFixtu
         }, {})
       );
 
-      const mapRowToInsertQuery = createRowToQueryMapper(table, pool, camelCased);
+      const mapRowToInsertQuery = createRowToQueryMapper(
+        table,
+        pool,
+        camelCased
+      );
       // might need to loop here so we can guarantee insert order
       const results: QueryResult<any>[] = [];
       for (const row of rowsResolved) {
@@ -115,9 +122,13 @@ export const tinyFixtures = (pool: Pool, camelCased: boolean = false): TinyFixtu
 
       rowsEnhanced.splice(0, rowsEnhanced.length);
       mixedArr.forEach((r) => rowsEnhanced.push(r));
+
+      return results.map(({ rows }) => rows[0]);
     };
     const teardownFixtures = async () => {
-      await pool.query(buildDeleteQueryString(table, pkName, primaryKeys, camelCased));
+      await pool.query(
+        buildDeleteQueryString(table, pkName, primaryKeys, camelCased)
+      );
     };
 
     return [setupFixtures, teardownFixtures, rowsEnhanced];
