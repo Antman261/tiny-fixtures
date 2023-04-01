@@ -1,4 +1,4 @@
-import { Pool } from 'pg';
+import { Pool, QueryResult } from 'pg';
 import {
   buildDeleteQueryString,
   createRowToQueryMapper,
@@ -8,7 +8,7 @@ import {
 /**
  * Call this function inside your `before` or `beforeEach` step to insert the specified fixtures
  */
-export type SetupFixtures = () => void;
+export type SetupFixtures<T> = () => Promise<QueryResult<T>[]>;
 
 /**
  * Call this function inside your `after` or `afterEach` step to delete the specified fixtures. This will only delete the data inserted for this fixture, so any other test data remains untouched.
@@ -55,7 +55,7 @@ export type CreateFixtures = <T extends object>(
   table: string,
   rows: T[],
   primaryKeyName?: string
-) => [SetupFixtures, TeardownFixtures, ResultArray<T>];
+) => [SetupFixtures<T>, TeardownFixtures, ResultArray<T>];
 
 /**
  * Contains the createFixtures function, with the pool in its closure.
