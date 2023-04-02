@@ -3,9 +3,9 @@ import { snakeCase } from 'snake-case';
 
 type Row = Record<string, any>;
 
-const buildInsertColumnString = (row: Row, camelCased: boolean) =>
+const buildInsertColumnString = (row: Row, convertToSnakecase: boolean) =>
   `(${Object.keys(row)
-    .map((k) => `"${camelCased ? snakeCase(k) : k}"`)
+    .map((k) => `"${convertToSnakecase ? snakeCase(k) : k}"`)
     .join(', ')})`;
 
 const buildInsertValueBindingString = (row: Row) =>
@@ -16,10 +16,10 @@ const buildInsertValueBindingString = (row: Row) =>
 const buildInsertQueryString = (
   table: string,
   row: Row,
-  camelCased: boolean
+  convertToSnakecase: boolean
 ) => `
-    INSERT INTO "${camelCased ? snakeCase(table) : table}"
-    ${buildInsertColumnString(row, camelCased)}
+    INSERT INTO "${convertToSnakecase ? snakeCase(table) : table}"
+    ${buildInsertColumnString(row, convertToSnakecase)}
     VALUES
     ${buildInsertValueBindingString(row)}
     RETURNING *
