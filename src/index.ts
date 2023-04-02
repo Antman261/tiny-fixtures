@@ -70,13 +70,20 @@ const createRefGetter =
   (): string | number =>
     rows[index][key];
 
+export type TinyFixturesOptions = {
+  convertToSnakecase: boolean;
+};
+
+const defaultOpts: TinyFixturesOptions = {
+  convertToSnakecase: false,
+};
+
 /**
- *
  * @param pool A node postgres pool for tiny fixtures to connect with.
  */
 export const tinyFixtures = (
   pool: Pool,
-  camelCased: boolean = false
+  { convertToSnakecase }: TinyFixturesOptions = defaultOpts
 ): TinyFixtures => {
   const createFixtures: TinyFixtures['createFixtures'] = (
     table,
@@ -103,9 +110,10 @@ export const tinyFixtures = (
       const mapRowToInsertQuery = createRowToQueryMapper(
         table,
         pool,
-        camelCased
+        convertToSnakecase
       );
-      // might need to loop here so we can guarantee insert order
+
+      // use for loop with await to guarantee insert order
       const results: QueryResult<any>[] = [];
       for (const row of rowsResolved) {
         const result = await mapRowToInsertQuery(row);
@@ -127,7 +135,7 @@ export const tinyFixtures = (
     };
     const teardownFixtures = async () => {
       await pool.query(
-        buildDeleteQueryString(table, pkName, primaryKeys, camelCased)
+        buildDeleteQueryString(table, pkName, primaryKeys, convertToSnakecase)
       );
     };
 

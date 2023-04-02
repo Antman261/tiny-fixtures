@@ -10,11 +10,12 @@ describe('integration test the whole library', () => {
     const [setupUserFixtures, teardownUserFixtures] = createFixtures('users', [
       {
         email: 'foo@bar.co',
-        username: 'tinyAnt'
-      }, {
+        username: 'tinyAnt',
+      },
+      {
         email: 'bar@foo.co',
         username: 'antTiny',
-      }
+      },
     ]);
     beforeEach(async () => {
       await setupUserFixtures();
@@ -29,18 +30,21 @@ describe('integration test the whole library', () => {
   });
 
   describe('Two table with join use case', () => {
-    const [setupUserFixtures, teardownUserFixtures, users] = createFixtures('users', [
-      {
-        email: 'foo@bar.co',
-        username: 'tinyAnt'
-      }, {
-        email: 'bar@foo.co',
-        username: 'antTiny',
-      }
-    ]);
-    const [setupUserMessageFixtures, teardownUserMessageFixtures] = createFixtures(
-      'user_messages',
+    const [setupUserFixtures, teardownUserFixtures, users] = createFixtures(
+      'users',
       [
+        {
+          email: 'foo@bar.co',
+          username: 'tinyAnt',
+        },
+        {
+          email: 'bar@foo.co',
+          username: 'antTiny',
+        },
+      ]
+    );
+    const [setupUserMessageFixtures, teardownUserMessageFixtures] =
+      createFixtures('user_messages', [
         {
           user_id: users[0].getRefByKey('id'),
           message: 'Foobar did the bar foo good',
@@ -48,9 +52,8 @@ describe('integration test the whole library', () => {
         {
           user_id: users[0].getRefByKey('id'),
           message: 'I am a meat popsicle',
-        }
-      ],
-    )
+        },
+      ]);
     beforeEach(async () => {
       await setupUserFixtures();
       await setupUserMessageFixtures();
@@ -67,18 +70,44 @@ describe('integration test the whole library', () => {
     });
   });
 
-  describe('snake_case if identifiers have been camel/PascalCased', () => {
-    const { createFixtures } = tinyFixtures(pool, true);
-
-    const [setupUserFixtures, teardownUserFixtures, users] = createFixtures('Users', [
-      {
-        email: 'foo@bar.co',
-        username: 'tinyAnt'
-      }
-    ]);
-    const [setupUserMessageFixtures, teardownUserMessageFixtures] = createFixtures(
-      'UserMessages',
+  describe('supports case-sensitive identifiers', () => {
+    const [setupUserFixtures, teardownUserFixtures] = createFixtures(
+      'camelCased',
       [
+        {
+          someColumnName: 'foo@bar.co',
+        },
+        {
+          someColumnName: 'bar@foo.co',
+        },
+      ]
+    );
+    beforeEach(async () => {
+      await setupUserFixtures();
+    });
+    afterEach(async () => {
+      await teardownUserFixtures();
+    });
+    it('should have two entries in the "camelCased" table', async () => {
+      const res = await pool.query(`SELECT * FROM "camelCased"`);
+      expect(res.rows.length).to.equal(2);
+    });
+  });
+
+  describe('convertToSnakecase option will snake_case camelCased identifiers', () => {
+    const { createFixtures } = tinyFixtures(pool, { convertToSnakecase: true });
+
+    const [setupUserFixtures, teardownUserFixtures, users] = createFixtures(
+      'Users',
+      [
+        {
+          email: 'foo@bar.co',
+          username: 'tinyAnt',
+        },
+      ]
+    );
+    const [setupUserMessageFixtures, teardownUserMessageFixtures] =
+      createFixtures('UserMessages', [
         {
           userId: users[0].getRefByKey('id'),
           message: 'Foobar did the bar foo good',
@@ -86,9 +115,8 @@ describe('integration test the whole library', () => {
         {
           userId: users[0].getRefByKey('id'),
           message: 'I am a meat popsicle',
-        }
-      ],
-    )
+        },
+      ]);
     beforeEach(async () => {
       await setupUserFixtures();
       await setupUserMessageFixtures();
@@ -106,26 +134,33 @@ describe('integration test the whole library', () => {
 
   describe('returning values', () => {
     const { createFixtures } = tinyFixtures(pool);
-    const [setupUserFixtures, teardownUserFixtures, users] = createFixtures('users', [
+    const [setupUserFixtures, teardownUserFixtures, users] = createFixtures(
+      'users',
+      [
+        {
+          email: 'foo@bar.co',
+          username: 'tinyAnt',
+        },
+        {
+          email: 'bar@foo.co',
+          username: 'antTiny',
+        },
+      ]
+    );
+    const [
+      setupUserMessageFixtures,
+      teardownUserMessageFixtures,
+      userMessages,
+    ] = createFixtures('user_messages', [
       {
-        email: 'foo@bar.co',
-        username: 'tinyAnt'
-      }, {
-        email: 'bar@foo.co',
-        username: 'antTiny',
-      }
+        user_id: users[0].getRefByKey('id'),
+        message: 'Foobar did the bar foo good',
+      },
+      {
+        user_id: users[0].getRefByKey('id'),
+        message: 'I am a meat popsicle',
+      },
     ]);
-    const [setupUserMessageFixtures, teardownUserMessageFixtures, userMessages] =
-      createFixtures('user_messages', [
-        {
-          user_id: users[0].getRefByKey('id'),
-          message: 'Foobar did the bar foo good',
-        },
-        {
-          user_id: users[0].getRefByKey('id'),
-          message: 'I am a meat popsicle',
-        },
-      ]);
 
     afterEach(async () => {
       await teardownUserMessageFixtures();
@@ -166,5 +201,5 @@ describe('integration test the whole library', () => {
         },
       ]);
     });
-  })
+  });
 });
