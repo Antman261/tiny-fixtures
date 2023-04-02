@@ -12,6 +12,7 @@
 - [SetupFixtures](modules.md#setupfixtures)
 - [TeardownFixtures](modules.md#teardownfixtures)
 - [TinyFixtures](modules.md#tinyfixtures)
+- [TinyFixturesOptions](modules.md#tinyfixturesoptions)
 
 ### Functions
 
@@ -53,7 +54,7 @@ Use this function to create a set of fixtures for a particular table in the data
 
 **Returns:** [[*SetupFixtures*](modules.md#setupfixtures), [*TeardownFixtures*](modules.md#teardownfixtures), [*ResultArray*](modules.md#resultarray)<T\>]
 
-Defined in: [index.ts:54](https://github.com/Antman261/tiny-fixtures/blob/fb0f17d/src/index.ts#L54)
+Defined in: [index.ts:54](https://github.com/Antman261/tiny-fixtures/blob/1d28ec9/src/index.ts#L54)
 
 ___
 
@@ -75,7 +76,7 @@ ___
 | :------ |
 | `T` |
 
-Defined in: [index.ts:43](https://github.com/Antman261/tiny-fixtures/blob/fb0f17d/src/index.ts#L43)
+Defined in: [index.ts:43](https://github.com/Antman261/tiny-fixtures/blob/1d28ec9/src/index.ts#L43)
 
 ___
 
@@ -91,39 +92,39 @@ When the createFixtures function returns an array of the rows you've chosen to i
 | :------ | :------ | :------ |
 | `getRefByKey` | (`key`: *string*) => () => *string* \| *number* | Using this function tells tiny-fixtures to get a value from this fixture after it has been inserted in the database, rather than the test data provided by you.  This is useful for cases such as accessing a primary key to create a join, or retrieving a default value, such as the result of `DEFAULT NOW()`  You only need to use this function to tell tiny-fixtures to retrieve this column at insert. When your tests are running, they will have access to the resulting insert if needed, as tiny-fixtures updates the row array on the fly.  **`param`** The name of the column to retrieve.  **`returns`** A function that can be executed later to retrieve the value |
 
-Defined in: [index.ts:21](https://github.com/Antman261/tiny-fixtures/blob/fb0f17d/src/index.ts#L21)
+Defined in: [index.ts:21](https://github.com/Antman261/tiny-fixtures/blob/1d28ec9/src/index.ts#L21)
 
 ___
 
 ### SetupFixtures
 
-Ƭ **SetupFixtures**: () => *void*
+Ƭ **SetupFixtures**: () => *Promise*<any[]\>
 
 Call this function inside your `before` or `beforeEach` step to insert the specified fixtures
 
 #### Type declaration
 
-▸ (): *void*
+▸ (): *Promise*<any[]\>
 
-**Returns:** *void*
+**Returns:** *Promise*<any[]\>
 
-Defined in: [index.ts:11](https://github.com/Antman261/tiny-fixtures/blob/fb0f17d/src/index.ts#L11)
+Defined in: [index.ts:11](https://github.com/Antman261/tiny-fixtures/blob/1d28ec9/src/index.ts#L11)
 
 ___
 
 ### TeardownFixtures
 
-Ƭ **TeardownFixtures**: () => *void*
+Ƭ **TeardownFixtures**: () => *Promise*<void\>
 
 Call this function inside your `after` or `afterEach` step to delete the specified fixtures. This will only delete the data inserted for this fixture, so any other test data remains untouched.
 
 #### Type declaration
 
-▸ (): *void*
+▸ (): *Promise*<void\>
 
-**Returns:** *void*
+**Returns:** *Promise*<void\>
 
-Defined in: [index.ts:16](https://github.com/Antman261/tiny-fixtures/blob/fb0f17d/src/index.ts#L16)
+Defined in: [index.ts:16](https://github.com/Antman261/tiny-fixtures/blob/1d28ec9/src/index.ts#L16)
 
 ___
 
@@ -139,20 +140,35 @@ Contains the createFixtures function, with the pool in its closure.
 | :------ | :------ |
 | `createFixtures` | [*CreateFixtures*](modules.md#createfixtures) |
 
-Defined in: [index.ts:63](https://github.com/Antman261/tiny-fixtures/blob/fb0f17d/src/index.ts#L63)
+Defined in: [index.ts:63](https://github.com/Antman261/tiny-fixtures/blob/1d28ec9/src/index.ts#L63)
+
+___
+
+### TinyFixturesOptions
+
+Ƭ **TinyFixturesOptions**: *object*
+
+#### Type declaration
+
+| Name | Type |
+| :------ | :------ |
+| `convertToSnakecase` | *boolean* |
+
+Defined in: [index.ts:73](https://github.com/Antman261/tiny-fixtures/blob/1d28ec9/src/index.ts#L73)
 
 ## Functions
 
 ### tinyFixtures
 
-▸ `Const` **tinyFixtures**(`pool`: *Pool*): [*TinyFixtures*](modules.md#tinyfixtures)
+▸ `Const` **tinyFixtures**(`pool`: *Pool*, `__namedParameters?`: [*TinyFixturesOptions*](modules.md#tinyfixturesoptions)): [*TinyFixtures*](modules.md#tinyfixtures)
 
 #### Parameters
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
 | `pool` | *Pool* | A node postgres pool for tiny fixtures to connect with. |
+| `__namedParameters` | [*TinyFixturesOptions*](modules.md#tinyfixturesoptions) | - |
 
 **Returns:** [*TinyFixtures*](modules.md#tinyfixtures)
 
-Defined in: [index.ts:77](https://github.com/Antman261/tiny-fixtures/blob/fb0f17d/src/index.ts#L77)
+Defined in: [index.ts:84](https://github.com/Antman261/tiny-fixtures/blob/1d28ec9/src/index.ts#L84)

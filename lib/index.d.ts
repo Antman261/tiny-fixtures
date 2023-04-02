@@ -48,9 +48,11 @@ export declare type CreateFixtures = <T extends object>(table: string, rows: T[]
 export declare type TinyFixtures = {
     createFixtures: CreateFixtures;
 };
+export declare type TinyFixturesOptions = {
+    convertToSnakecase: boolean;
+};
 /**
- *
  * @param pool A node postgres pool for tiny fixtures to connect with.
  */
-export declare const tinyFixtures: (pool: Pool, camelCased?: boolean) => TinyFixtures;
+export declare const tinyFixtures: (pool: Pool, { convertToSnakecase }?: TinyFixturesOptions) => TinyFixtures;
 //# sourceMappingURL=index.d.ts.map
