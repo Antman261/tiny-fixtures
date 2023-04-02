@@ -21,7 +21,7 @@
     "build": "npx tsc -p .",
     "build-docs": "npx typedoc --out docs src/index.ts --disableOutputCheck",
     "commit": "npx cz",
-    "release": "npm run build && npm run build-docs && git add . && standard-version"
+    "release": "npm run build && npm run build-docs && git add . && npm run commit && standard-version"
   },
   "lint-staged": {
     "*.ts": [
