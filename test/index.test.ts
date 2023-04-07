@@ -7,7 +7,7 @@ const { createFixtures } = tinyFixtures(pool);
 
 describe('integration test the whole library', () => {
   describe('Basic single table use case', () => {
-    const [setupUserFixtures, teardownUserFixtures] = createFixtures('users', [
+    const [setupUserFixtures, teardownUserFixtures] = createFixtures('public.users', [
       {
         email: 'foo@bar.co',
         username: 'tinyAnt',
