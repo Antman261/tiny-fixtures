@@ -53,6 +53,7 @@ export declare type TinyFixturesOptions = {
 };
 /**
  * @param pool A node postgres pool for tiny fixtures to connect with.
+ * @param { convertToSnakecase: boolean = false } options
  */
 export declare const tinyFixtures: (pool: Pool, { convertToSnakecase }?: TinyFixturesOptions) => TinyFixtures;
 //# sourceMappingURL=index.d.ts.map
