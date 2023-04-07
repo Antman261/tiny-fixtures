@@ -34,7 +34,9 @@ export const buildInsertQueryString = (
   row: Row,
   convertToSnakecase: boolean
 ) => `
-  INSERT INTO ${convertToSnakecase ? resolveTableSnakeCase(table) : wrapDoubleQuotes(table)}
+  INSERT INTO ${
+    convertToSnakecase ? resolveTableSnakeCase(table) : wrapDoubleQuotes(table)
+  }
   ${buildInsertColumnString(row, convertToSnakecase)}
   VALUES
   ${buildInsertValueBindingString(row)}
@@ -58,7 +60,9 @@ export const buildDeleteQueryString = (
   }
   const pkValues = keys.map((k) => (typeof k === 'number' ? k : `'${k}'`));
   return `
-  DELETE FROM ${convertToSnakecase ? resolveTableSnakeCase(table) : wrapDoubleQuotes(table)}
+  DELETE FROM ${
+    convertToSnakecase ? resolveTableSnakeCase(table) : wrapDoubleQuotes(table)
+  }
   WHERE "${
     convertToSnakecase ? snakeCase(pkName) : pkName
   }" IN (${pkValues.join(', ')})
