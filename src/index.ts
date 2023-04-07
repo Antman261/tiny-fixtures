@@ -80,6 +80,7 @@ const defaultOpts: TinyFixturesOptions = {
 
 /**
  * @param pool A node postgres pool for tiny fixtures to connect with.
+ * @param { convertToSnakecase: boolean = false } options
  */
 export const tinyFixtures = (
   pool: Pool,

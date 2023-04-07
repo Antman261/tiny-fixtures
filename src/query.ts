@@ -15,7 +15,7 @@ const resolveTableSnakeCase = (table: string): string => {
   const tableParts = table.split('.');
 
   return tableParts.length > 1
-    ? `${tableParts[0]}."${snakeCase(tableParts[1])}"`
+    ? `${tableParts[0]}.${wrapDoubleQuotes(snakeCase(tableParts[1]))}`
     : wrapDoubleQuotes(snakeCase(table));
 };
 
