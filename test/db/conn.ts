@@ -1,4 +1,4 @@
-import {Pool} from 'pg';
+import { Pool } from 'pg';
 
 export const pool = new Pool({
   host: process.env.DatabaseHost || 'localhost',

@@ -27,17 +27,32 @@ describe('query functions', function () {
     });
 
     it('builds a delete query string with multiple ids', () => {
-      const actual = buildDeleteQueryString('test', 'test_id', [1, 2, 3], false);
+      const actual = buildDeleteQueryString(
+        'test',
+        'test_id',
+        [1, 2, 3],
+        false
+      );
       expect(actual).to.equal(expectedTwo);
     });
 
     it('builds a delete query string with string ids', () => {
-      const actual = buildDeleteQueryString('test', 'test_id', ['1', '2', '3'], false);
+      const actual = buildDeleteQueryString(
+        'test',
+        'test_id',
+        ['1', '2', '3'],
+        false
+      );
       expect(actual).to.equal(expectedThree);
     });
 
     it('builds a delete query string with mixed ids', () => {
-      const actual = buildDeleteQueryString('test', 'test_id', ['1', 2, '3'], false);
+      const actual = buildDeleteQueryString(
+        'test',
+        'test_id',
+        ['1', 2, '3'],
+        false
+      );
       expect(actual).to.equal(expectedFour);
     });
 
@@ -95,10 +110,14 @@ describe('query functions', function () {
 
   describe('buildInsertQueryString', () => {
     it('returns the insert query with schema', () => {
-      const actual = buildInsertQueryString('public."users"', {
-        first_name: 'Seth',
-        last_name: 'Tran',
-      }, false);
+      const actual = buildInsertQueryString(
+        'public."users"',
+        {
+          first_name: 'Seth',
+          last_name: 'Tran',
+        },
+        false
+      );
 
       expect(actual).to.equal(`
   INSERT INTO public."users"
@@ -110,10 +129,14 @@ describe('query functions', function () {
     });
 
     it('returns the insert query without schema', () => {
-      const actual = buildInsertQueryString('users', {
-        first_name: 'Ant',
-        last_name: 'Man',
-      }, false);
+      const actual = buildInsertQueryString(
+        'users',
+        {
+          first_name: 'Ant',
+          last_name: 'Man',
+        },
+        false
+      );
 
       expect(actual).to.equal(`
   INSERT INTO "users"
@@ -125,10 +148,14 @@ describe('query functions', function () {
     });
 
     it('returns the insert query with schema automatically converted to snake_case', () => {
-      const actual = buildInsertQueryString('public."superUsers"', {
-        first_name: 'God',
-        last_name: 'Mode',
-      }, true);
+      const actual = buildInsertQueryString(
+        'public."superUsers"',
+        {
+          first_name: 'God',
+          last_name: 'Mode',
+        },
+        true
+      );
 
       expect(actual).to.equal(`
   INSERT INTO public."super_users"
