@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { buildDeleteQueryString } from '../src/query';
+import { buildDeleteQueryString, buildInsertQueryString } from '../src/query';
 import { findPrimaryKeyName } from '../src/query';
 import { FieldDef, QueryResult } from 'pg';
 
@@ -90,6 +90,53 @@ describe('query functions', function () {
     });
     it('returns the field name of column 1', () => {
       expect(findPrimaryKeyName(fieldsGood)).to.equal('id');
+    });
+  });
+
+  describe('buildInsertQueryString', () => {
+    it('returns the insert query with schema', () => {
+      const actual = buildInsertQueryString('public."users"', {
+        first_name: 'Seth',
+        last_name: 'Tran',
+      }, false);
+
+      expect(actual).to.equal(`
+  INSERT INTO public."users"
+  ("first_name", "last_name")
+  VALUES
+  ($1, $2)
+  RETURNING *
+`);
+    });
+
+    it('returns the insert query without schema', () => {
+      const actual = buildInsertQueryString('users', {
+        first_name: 'Ant',
+        last_name: 'Man',
+      }, false);
+
+      expect(actual).to.equal(`
+  INSERT INTO "users"
+  ("first_name", "last_name")
+  VALUES
+  ($1, $2)
+  RETURNING *
+`);
+    });
+
+    it('returns the insert query with schema automatically converted to snake_case', () => {
+      const actual = buildInsertQueryString('public."superUsers"', {
+        first_name: 'God',
+        last_name: 'Mode',
+      }, true);
+
+      expect(actual).to.equal(`
+  INSERT INTO public."super_users"
+  ("first_name", "last_name")
+  VALUES
+  ($1, $2)
+  RETURNING *
+`);
     });
   });
 });
