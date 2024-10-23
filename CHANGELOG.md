@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0](https://github.com/antman261/tiny-fixtures/compare/v0.2.7...v0.3.0) (2024-10-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* May no longer supports node versions <14
+
+*  Update ts compile target to es2020 ([6ac4703](https://github.com/antman261/tiny-fixtures/commit/6ac4703a2f9eadc53fecd3b3fd67463d6476fba9))
+
 ### [0.2.7](https://github.com/antman261/tiny-fixtures/compare/v0.2.6...v0.2.7) (2023-04-07)
 
 ### [0.2.6](https://github.com/antman261/tiny-fixtures/compare/v0.2.5...v0.2.6) (2023-04-02)
